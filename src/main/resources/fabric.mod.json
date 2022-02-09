@@ -10,15 +10,13 @@
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
   },
-  "icon": "assets/template/icon.png",
+  "icon": "assets/e621/icon.png",
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "dummy.addon.template.TemplateAddon"
+      "anticope.esixtwoone.TemplateAddon"
     ]
   },
-  "mixins": [
-  ],
   "custom": {
     "meteor-client:color": "247,195,164"
   },

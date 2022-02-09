@@ -1,4 +1,4 @@
-package dummy.addon.template;
+package anticope.esixtwoone;
 
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -14,9 +14,9 @@ public class TemplateAddon extends MeteorAddon {
 
 	@Override
 	public void onInitialize() {
-		LOG.info("Initializing Meteor Addon Template");
+		LOG.info("Initializing E621");
 
-		MeteorClient.EVENT_BUS.registerLambdaFactory("dummy.addon.template", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
+		MeteorClient.EVENT_BUS.registerLambdaFactory("anticope.esixtwoone", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
 
 		// HUD
 		HUD hud = Systems.get(HUD.class);
