@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "e621-hud",
+  "version": "${version}",
+  "name": "E621 hud",
+  "description": "An addon template for the Meteor addons.",
+  "authors": [
+    "AntiCope"
+  ],
+  "contact": {
+    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+  },
+  "icon": "assets/template/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "dummy.addon.template.TemplateAddon"
+    ]
+  },
+  "mixins": [
+  ],
+  "custom": {
+    "meteor-client:color": "247,195,164"
+  },
+  "depends": {
+    "java": ">=17",
+    "minecraft": ">=1.18",
+    "meteor-client": "*"
+  }
+}
