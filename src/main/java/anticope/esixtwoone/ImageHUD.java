@@ -4,6 +4,7 @@ import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
+import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -13,39 +14,65 @@ import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.systems.hud.modules.HudElement;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.orbit.EventHandler;
-import meteordevelopment.meteorclient.renderer.Texture;
 import com.google.gson.JsonObject;
+
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.util.Identifier;
+
 import com.google.gson.JsonArray;
-import java.awt.image.BufferedImage;
 
 import static meteordevelopment.meteorclient.utils.Utils.WHITE;
 
 import java.util.Random;
 
-import javax.imageio.ImageIO;
-
 public class ImageHUD extends HudElement {
-    private Texture texture;
+    public enum Size {
+        preview,
+        sample,
+        file
+    }
+
     private boolean locked = false;
     private int ticks = 0;
+    private int width = -1;
+    private int height = -1;
+
+    private static final Identifier TEXID = new Identifier("e621", "tex");
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
-    private final Setting<Double> scale = sgGeneral.add(new DoubleSetting.Builder()
-        .name("scale")
+    private final Setting<Double> imgWidth = sgGeneral.add(new DoubleSetting.Builder()
+        .name("width")
         .description("The scale of the image.")
-        .defaultValue(3)
-        .min(0.1)
-        .sliderRange(0.1, 10)
+        .defaultValue(100)
+        .min(10)
+        .sliderRange(70, 1000)
         .build()
     );
-    
+
+    private final Setting<Double> imgHeight = sgGeneral.add(new DoubleSetting.Builder()
+        .name("height")
+        .description("The scale of the image.")
+        .defaultValue(100)
+        .min(10)
+        .sliderRange(70, 1000)
+        .build()
+    );
 
     private final Setting<String> tags = sgGeneral.add(new StringSetting.Builder()
         .name("tags")
         .description("Tags")
         .defaultValue("femboy")
-        .onChanged((v) -> texture = null)
+        .onChanged((v) -> width = -1)
+        .build()
+    );
+
+    private final Setting<Size> size = sgGeneral.add(new EnumSetting.Builder<Size>()
+        .name("size")
+        .description("The mode for anti kick.")
+        .defaultValue(Size.preview)
+        .onChanged((v) -> width = -1)
         .build()
     );
 
@@ -53,7 +80,7 @@ public class ImageHUD extends HudElement {
         .name("refresh-rate")
         .description("How often to change (ticks).")
         .defaultValue(1200)
-        .min(200)
+        .min(20)
         .build()
     );
 
@@ -65,6 +92,7 @@ public class ImageHUD extends HudElement {
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (!active) return;
+        if (mc.world == null) return;
         ticks ++;
         if (ticks >= refreshRate.get()) {
             ticks = 0;
@@ -74,19 +102,19 @@ public class ImageHUD extends HudElement {
 
     @Override
     public void update(HudRenderer renderer) {
-        box.setSize(64 * scale.get(), 64 * scale.get());
+        box.setSize(imgWidth.get(), imgHeight.get());
     }
 
     @Override
     public void render(HudRenderer renderer) {
-        if (texture == null) {
+        if (width == -1 || height == -1) {
             loadImage();
             return;
         }
 
-        texture.bind();
+        mc.getTextureManager().bindTexture(TEXID);
         Renderer2D.TEXTURE.begin();
-        Renderer2D.TEXTURE.texQuad(box.getX(), box.getY(), box.width, box.height, WHITE);
+        Renderer2D.TEXTURE.texQuad(box.getX(), box.getY(), imgWidth.get(), imgHeight.get(), WHITE);
         Renderer2D.TEXTURE.render(null);
     }
 
@@ -97,28 +125,16 @@ public class ImageHUD extends HudElement {
             try {
                 locked = true;
                 var random = new Random();
-                JsonObject result = Http.get("https://e621.net/posts.json?limit=1&tags="+tags.get().replace(" ", "+")+"&page="+ random.nextInt(1, 749)).sendJson(JsonObject.class);
+                JsonObject result = Http.get("https://e621.net/posts.json?limit=10&tags="+tags.get().replace(" ", "+")+"&page="+ random.nextInt(1, 749)).sendJson(JsonObject.class);
                 if (result.get("posts") instanceof JsonArray array) {
-                    if (array.get(0) instanceof JsonObject post) {
-                        var url = post.get("preview").getAsJsonObject().get("url").getAsString();
+                    if (array.get(random.nextInt(0, 11)) instanceof JsonObject post) {
+                        var sizeMode = size.get().toString();
+                        var url = post.get(sizeMode).getAsJsonObject().get("url").getAsString();
                         TemplateAddon.LOG.info(url);
-                        // int width = post.get("preview").getAsJsonObject().get("width").getAsInt();
-                        // int height = post.get("preview").getAsJsonObject().get("height").getAsInt();
-                        int size = 120;//Math.min(width, height);
-                        BufferedImage img = ImageIO.read(Http.get(url).sendInputStream());
-                        byte[] data = new byte[size*size*3];
-                        int[] pixel = new int[4];
-                        int i = 0;
-                        for (int x = 0; x < size; x++) {
-                            for (int y = 0; y < size; y++) {
-                                img.getData().getPixel(y, x, pixel);
-                                for (int j = 0; j < 3; j++) {
-                                    data[i] = (byte) pixel[j];
-                                    i++;
-                                }
-                            }
-                        }
-                        texture = new Texture(size, size, data, Texture.Format.RGB, Texture.Filter.Nearest, Texture.Filter.Nearest);
+                        width = post.get(sizeMode).getAsJsonObject().get("width").getAsInt();
+                        height = post.get(sizeMode).getAsJsonObject().get("height").getAsInt();
+                        var img = NativeImage.read(Http.get(url).sendInputStream());
+                        mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(img));
                     }
                 }
             } catch (Exception ex) {
