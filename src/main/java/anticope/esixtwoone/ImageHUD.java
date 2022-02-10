@@ -34,9 +34,8 @@ public class ImageHUD extends HudElement {
     }
 
     private boolean locked = false;
+    private boolean empty = true;
     private int ticks = 0;
-    private int width = -1;
-    private int height = -1;
 
     private static final Identifier TEXID = new Identifier("e621", "tex");
 
@@ -64,7 +63,7 @@ public class ImageHUD extends HudElement {
         .name("tags")
         .description("Tags")
         .defaultValue("femboy")
-        .onChanged((v) -> width = -1)
+        .onChanged((v) -> empty = true)
         .build()
     );
 
@@ -72,7 +71,7 @@ public class ImageHUD extends HudElement {
         .name("size")
         .description("The mode for anti kick.")
         .defaultValue(Size.preview)
-        .onChanged((v) -> width = -1)
+        .onChanged((v) -> empty = true)
         .build()
     );
 
@@ -107,7 +106,7 @@ public class ImageHUD extends HudElement {
 
     @Override
     public void render(HudRenderer renderer) {
-        if (width == -1 || height == -1) {
+        if (empty) {
             loadImage();
             return;
         }
@@ -131,10 +130,11 @@ public class ImageHUD extends HudElement {
                         var sizeMode = size.get().toString();
                         var url = post.get(sizeMode).getAsJsonObject().get("url").getAsString();
                         TemplateAddon.LOG.info(url);
-                        width = post.get(sizeMode).getAsJsonObject().get("width").getAsInt();
-                        height = post.get(sizeMode).getAsJsonObject().get("height").getAsInt();
+                        //int width = post.get(sizeMode).getAsJsonObject().get("width").getAsInt();
+                        //int height = post.get(sizeMode).getAsJsonObject().get("height").getAsInt();
                         var img = NativeImage.read(Http.get(url).sendInputStream());
                         mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(img));
+                        empty = false;
                     }
                 }
             } catch (Exception ex) {
