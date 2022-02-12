@@ -3,6 +3,7 @@ package anticope.esixtwoone;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
+import meteordevelopment.meteorclient.renderer.GL;
 import meteordevelopment.meteorclient.settings.DoubleSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.IntSetting;
@@ -111,7 +112,7 @@ public class ImageHUD extends HudElement {
             return;
         }
 
-        mc.getTextureManager().bindTexture(TEXID);
+        GL.bindTexture(TEXID);
         Renderer2D.TEXTURE.begin();
         Renderer2D.TEXTURE.texQuad(box.getX(), box.getY(), imgWidth.get(), imgHeight.get(), WHITE);
         Renderer2D.TEXTURE.render(null);
