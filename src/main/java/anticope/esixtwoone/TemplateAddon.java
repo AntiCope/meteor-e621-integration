@@ -5,12 +5,12 @@ import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.Systems;
 import meteordevelopment.meteorclient.systems.hud.HUD;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.lang.invoke.MethodHandles;
 
 public class TemplateAddon extends MeteorAddon {
-	public static final Logger LOG = LogManager.getLogger();
+	public static final Logger LOG = LoggerFactory.getLogger("e621");
 
 	@Override
 	public void onInitialize() {
