@@ -139,7 +139,7 @@ public class ImageHUD extends HudElement {
                     }
                 }
             } catch (Exception ex) {
-                TemplateAddon.LOG.error(ex);
+                TemplateAddon.LOG.error("Failed to fetch an image.", ex);
             }
             locked = false;
         }).start();
