@@ -1,5 +1,13 @@
 # E621 hud element
 
+<div align="center">
+   
+  <img src="https://user-images.githubusercontent.com/18114966/156883971-ef020185-32ab-412a-9d1e-64e61668aa5e.png" width="24px"> Discord: [discord.gg/9mrRPGKYU3](https://discord.gg/9mrRPGKYU3)
+  
+</div>
+
+<hr />
+
 <img src="https://user-images.githubusercontent.com/18114966/153167032-9180f20f-d07e-459b-a51d-1d17c87fe028.png">
 
 <hr />
