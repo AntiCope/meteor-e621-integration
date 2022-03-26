@@ -15,28 +15,23 @@ import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.systems.hud.modules.HudElement;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.orbit.EventHandler;
-import com.google.gson.JsonObject;
 
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 
-import com.google.gson.JsonArray;
+import anticope.esixtwoone.sources.ESixTwoOne;
+import anticope.esixtwoone.sources.Source;
+import anticope.esixtwoone.sources.Source.Size;
+import anticope.esixtwoone.sources.Source.SourceType;
 
 import static meteordevelopment.meteorclient.utils.Utils.WHITE;
 
-import java.util.Random;
-
 public class ImageHUD extends HudElement {
-    public enum Size {
-        preview,
-        sample,
-        file
-    }
-
     private boolean locked = false;
     private boolean empty = true;
     private int ticks = 0;
+    private Source source = new ESixTwoOne();
 
     private static final Identifier TEXID = new Identifier("e621", "tex");
 
@@ -70,9 +65,20 @@ public class ImageHUD extends HudElement {
 
     private final Setting<Size> size = sgGeneral.add(new EnumSetting.Builder<Size>()
         .name("size")
-        .description("The mode for anti kick.")
+        .description("Size mode.")
         .defaultValue(Size.preview)
         .onChanged((v) -> empty = true)
+        .build()
+    );
+
+    private final Setting<SourceType> sourceType = sgGeneral.add(new EnumSetting.Builder<SourceType>()
+        .name("source")
+        .description("Source Type.")
+        .defaultValue(SourceType.e621)
+        .onChanged((v) -> {
+            source = Source.getSource(v);
+            empty = true;
+        })
         .build()
     );
 
@@ -119,27 +125,22 @@ public class ImageHUD extends HudElement {
     }
 
     private void loadImage() {
-        if (locked)
+        if (locked || source == null)
             return;
         new Thread(() -> {
             try {
                 locked = true;
-                var random = new Random();
-                JsonObject result = Http.get("https://e621.net/posts.json?limit=10&tags="+tags.get().replace(" ", "+")+"&page="+ random.nextInt(1, 749)).sendJson(JsonObject.class);
-                if (result.get("posts") instanceof JsonArray array) {
-                    if (array.get(random.nextInt(0, 11)) instanceof JsonObject post) {
-                        var sizeMode = size.get().toString();
-                        var url = post.get(sizeMode).getAsJsonObject().get("url").getAsString();
-                        TemplateAddon.LOG.info(url);
-                        //int width = post.get(sizeMode).getAsJsonObject().get("width").getAsInt();
-                        //int height = post.get(sizeMode).getAsJsonObject().get("height").getAsInt();
-                        var img = NativeImage.read(Http.get(url).sendInputStream());
-                        mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(img));
-                        empty = false;
-                    }
+                String url = source.getRandomImage(tags.get(), size.get());
+                if (url == null) {
+                    locked = false;
+                    return;
                 }
+                TemplateAddon.LOG.info(url);
+                var img = NativeImage.read(Http.get(url).sendInputStream());
+                mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(img));
+                empty = false;
             } catch (Exception ex) {
-                TemplateAddon.LOG.error("Failed to fetch an image.", ex);
+                TemplateAddon.LOG.error("Failed to render the image.", ex);
             }
             locked = false;
         }).start();
