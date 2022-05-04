@@ -59,7 +59,10 @@ public class ImageHUD extends HudElement {
         .name("tags")
         .description("Tags")
         .defaultValue("femboy")
-        .onChanged((v) -> empty = true)
+        .onChanged((v) -> {
+            source.reset();
+            empty = true;
+        })
         .build()
     );
 
@@ -67,7 +70,10 @@ public class ImageHUD extends HudElement {
         .name("size")
         .description("Size mode.")
         .defaultValue(Size.preview)
-        .onChanged((v) -> empty = true)
+        .onChanged((v) -> {
+            source.reset();
+            empty = true;
+        })
         .build()
     );
 
@@ -77,6 +83,7 @@ public class ImageHUD extends HudElement {
         .defaultValue(SourceType.e621)
         .onChanged((v) -> {
             source = Source.getSource(v);
+            source.reset();
             empty = true;
         })
         .build()

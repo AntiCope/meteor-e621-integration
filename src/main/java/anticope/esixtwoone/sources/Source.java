@@ -20,6 +20,8 @@ public abstract class Source {
 
     protected final Random random = new Random();
 
+    public abstract void reset();
+
     protected abstract String randomImage(String filter, Size size);
 
     public String getRandomImage(String filter, Size size) {
