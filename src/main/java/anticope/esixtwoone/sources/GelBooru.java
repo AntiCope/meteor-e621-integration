@@ -17,6 +17,9 @@ public class GelBooru extends Source {
     }
 
     @Override
+    public void reset() {}
+
+    @Override
     public String randomImage(String filter, Size size) {
         String query = String.format("%s/index.php?page=dapi&s=post&q=index&tags=%s&pid=%d&json=1&limit=10", domain, filter, random.nextInt(0, lastPage));
         JsonElement result = Http.get(query).sendJson(JsonElement.class);
@@ -32,10 +35,10 @@ public class GelBooru extends Source {
                     var url = post.get(size.toString()+"_url").getAsString();
                     return url;
                 }
-            } 
+            }
         }
-        
+
         return null;
     }
-    
+
 }
