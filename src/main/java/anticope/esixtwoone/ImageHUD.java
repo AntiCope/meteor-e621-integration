@@ -1,6 +1,5 @@
 package anticope.esixtwoone;
 
-import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
 import meteordevelopment.meteorclient.renderer.GL;
@@ -10,9 +9,10 @@ import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.StringSetting;
-import meteordevelopment.meteorclient.systems.hud.HUD;
+import meteordevelopment.meteorclient.systems.hud.Hud;
+import meteordevelopment.meteorclient.systems.hud.HudElement;
+import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
-import meteordevelopment.meteorclient.systems.hud.modules.HudElement;
 import meteordevelopment.meteorclient.utils.network.Http;
 import meteordevelopment.orbit.EventHandler;
 
@@ -25,9 +25,12 @@ import anticope.esixtwoone.sources.Source;
 import anticope.esixtwoone.sources.Source.Size;
 import anticope.esixtwoone.sources.Source.SourceType;
 
+import static baritone.api.utils.Helper.mc;
 import static meteordevelopment.meteorclient.utils.Utils.WHITE;
 
 public class ImageHUD extends HudElement {
+    public static final HudElementInfo<ImageHUD> INFO = new HudElementInfo<>(Hud.GROUP, "e621-image", "sex", ImageHUD::create);
+
     private boolean locked = false;
     private boolean empty = true;
     private int ticks = 0;
@@ -93,29 +96,27 @@ public class ImageHUD extends HudElement {
         .name("refresh-rate")
         .description("How often to change (ticks).")
         .defaultValue(1200)
+        .max(3000)
         .min(20)
         .build()
     );
 
-    public ImageHUD(HUD hud) {
-        super(hud, "e621-image", "sex");
-        MeteorClient.EVENT_BUS.subscribe(this);
+    public ImageHUD() {
+        super(INFO);
+    }
+
+    private static ImageHUD create() {
+        return new ImageHUD();
     }
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (!active) return;
         if (mc.world == null) return;
         ticks ++;
         if (ticks >= refreshRate.get()) {
             ticks = 0;
             loadImage();
         }
-    }
-
-    @Override
-    public void update(HudRenderer renderer) {
-        box.setSize(imgWidth.get(), imgHeight.get());
     }
 
     @Override
@@ -127,7 +128,7 @@ public class ImageHUD extends HudElement {
 
         GL.bindTexture(TEXID);
         Renderer2D.TEXTURE.begin();
-        Renderer2D.TEXTURE.texQuad(box.getX(), box.getY(), imgWidth.get(), imgHeight.get(), WHITE);
+        Renderer2D.TEXTURE.texQuad(x, y, imgWidth.get(), imgHeight.get(), WHITE);
         Renderer2D.TEXTURE.render(null);
     }
 
@@ -151,5 +152,6 @@ public class ImageHUD extends HudElement {
             }
             locked = false;
         }).start();
+        setSize(imgWidth.get(), imgHeight.get());
     }
 }

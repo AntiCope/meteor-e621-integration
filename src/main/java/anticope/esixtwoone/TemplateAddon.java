@@ -1,33 +1,32 @@
 package anticope.esixtwoone;
 
-import meteordevelopment.meteorclient.MeteorClient;
+import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
-import meteordevelopment.meteorclient.systems.Systems;
-import meteordevelopment.meteorclient.systems.hud.HUD;
 
+import meteordevelopment.meteorclient.systems.hud.Hud;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.lang.invoke.MethodHandles;
-
 public class TemplateAddon extends MeteorAddon {
-	public static final Logger LOG = LoggerFactory.getLogger("e621");
+	public static final Logger LOG = LogUtils.getLogger();
 
 	@Override
 	public void onInitialize() {
 		LOG.info("Initializing E621");
 
-		MeteorClient.EVENT_BUS.registerLambdaFactory("anticope.esixtwoone", (lookupInMethod, klass) -> (MethodHandles.Lookup) lookupInMethod.invoke(null, klass, MethodHandles.lookup()));
-
 		// HUD
-		HUD hud = Systems.get(HUD.class);
-		hud.elements.add(new ImageHUD(hud));
+        Hud hud = Hud.get();
+        hud.register(ImageHUD.INFO);
 	}
 
-	@Override
+    @Override
+    public String getPackage() {
+        return "anticope.esixtwoone";
+    }
+
+    @Override
     public String getWebsite() {
         return "https://github.com/AntiCope/meteor-e621-integration";
     }
