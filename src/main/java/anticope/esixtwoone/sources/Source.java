@@ -3,7 +3,7 @@ package anticope.esixtwoone.sources;
 import java.net.URLEncoder;
 import java.util.Random;
 
-import anticope.esixtwoone.TemplateAddon;
+import anticope.esixtwoone.E621Hud;
 
 public abstract class Source {
     public enum Size {
@@ -28,7 +28,7 @@ public abstract class Source {
         try {
             return randomImage(URLEncoder.encode(filter, "UTF-8"), size);
         } catch (Exception ex) {
-            TemplateAddon.LOG.error("Failed to fetch an image.", ex);
+            E621Hud.LOG.error("Failed to fetch an image.", ex);
         }
         return null;
     }

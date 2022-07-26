@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 
 import net.fabricmc.loader.api.FabricLoader;
 
-public class TemplateAddon extends MeteorAddon {
+public class E621Hud extends MeteorAddon {
 	public static final Logger LOG = LogUtils.getLogger();
 
 	@Override

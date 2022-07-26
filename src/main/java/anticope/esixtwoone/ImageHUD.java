@@ -143,12 +143,12 @@ public class ImageHUD extends HudElement {
                     locked = false;
                     return;
                 }
-                TemplateAddon.LOG.info(url);
+                E621Hud.LOG.info(url);
                 var img = NativeImage.read(Http.get(url).sendInputStream());
                 mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(img));
                 empty = false;
             } catch (Exception ex) {
-                TemplateAddon.LOG.error("Failed to render the image.", ex);
+                E621Hud.LOG.error("Failed to render the image.", ex);
             }
             locked = false;
         }).start();
