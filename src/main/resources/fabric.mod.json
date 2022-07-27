@@ -14,7 +14,7 @@
   "environment": "client",
   "entrypoints": {
     "meteor": [
-      "anticope.esixtwoone.TemplateAddon"
+      "anticope.esixtwoone.E621Hud"
     ]
   },
   "custom": {
