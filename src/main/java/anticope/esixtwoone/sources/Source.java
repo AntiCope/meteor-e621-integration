@@ -1,6 +1,7 @@
 package anticope.esixtwoone.sources;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 import anticope.esixtwoone.E621Hud;
@@ -26,7 +27,7 @@ public abstract class Source {
 
     public String getRandomImage(String filter, Size size) {
         try {
-            return randomImage(URLEncoder.encode(filter, "UTF-8"), size);
+            return randomImage(URLEncoder.encode(filter, StandardCharsets.UTF_8), size);
         } catch (Exception ex) {
             E621Hud.LOG.error("Failed to fetch an image.", ex);
         }
