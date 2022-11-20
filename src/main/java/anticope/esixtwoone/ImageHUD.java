@@ -1,5 +1,6 @@
 package anticope.esixtwoone;
 
+import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.renderer.Renderer2D;
 import meteordevelopment.meteorclient.renderer.GL;
@@ -20,7 +21,6 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.util.Identifier;
 
-import anticope.esixtwoone.sources.ESixTwoOne;
 import anticope.esixtwoone.sources.Source;
 import anticope.esixtwoone.sources.Source.Size;
 import anticope.esixtwoone.sources.Source.SourceType;
@@ -34,7 +34,7 @@ public class ImageHUD extends HudElement {
     private boolean locked = false;
     private boolean empty = true;
     private int ticks = 0;
-    private Source source = new ESixTwoOne();
+    private Source source;
 
     private static final Identifier TEXID = new Identifier("e621", "tex");
 
@@ -46,6 +46,7 @@ public class ImageHUD extends HudElement {
         .defaultValue(100)
         .min(10)
         .sliderRange(70, 1000)
+        .onChanged(o -> updateSize())
         .build()
     );
 
@@ -55,6 +56,7 @@ public class ImageHUD extends HudElement {
         .defaultValue(100)
         .min(10)
         .sliderRange(70, 1000)
+        .onChanged(o -> updateSize())
         .build()
     );
 
@@ -62,10 +64,7 @@ public class ImageHUD extends HudElement {
         .name("tags")
         .description("Tags")
         .defaultValue("femboy")
-        .onChanged((v) -> {
-            source.reset();
-            empty = true;
-        })
+        .onChanged((v) -> updateSource())
         .build()
     );
 
@@ -73,10 +72,7 @@ public class ImageHUD extends HudElement {
         .name("size")
         .description("Size mode.")
         .defaultValue(Size.preview)
-        .onChanged((v) -> {
-            source.reset();
-            empty = true;
-        })
+        .onChanged((v) -> updateSource())
         .build()
     );
 
@@ -84,11 +80,7 @@ public class ImageHUD extends HudElement {
         .name("source")
         .description("Source Type.")
         .defaultValue(SourceType.e621)
-        .onChanged((v) -> {
-            source = Source.getSource(v);
-            source.reset();
-            empty = true;
-        })
+        .onChanged(v -> updateSource())
         .build()
     );
 
@@ -98,11 +90,20 @@ public class ImageHUD extends HudElement {
         .defaultValue(1200)
         .max(3000)
         .min(20)
+        .sliderRange(20, 3000)
         .build()
     );
 
     public ImageHUD() {
         super(INFO);
+        updateSource();
+        MeteorClient.EVENT_BUS.subscribe(this);
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        MeteorClient.EVENT_BUS.unsubscribe(this);
     }
 
     private static ImageHUD create() {
@@ -111,7 +112,6 @@ public class ImageHUD extends HudElement {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.world == null) return;
         ticks ++;
         if (ticks >= refreshRate.get()) {
             ticks = 0;
@@ -130,6 +130,16 @@ public class ImageHUD extends HudElement {
         Renderer2D.TEXTURE.begin();
         Renderer2D.TEXTURE.texQuad(x, y, imgWidth.get(), imgHeight.get(), WHITE);
         Renderer2D.TEXTURE.render(null);
+    }
+
+    private void updateSize() {
+        setSize(imgWidth.get(), imgHeight.get());
+    }
+
+    private void updateSource() {
+        source = Source.getSource(sourceType.get());
+        source.reset();
+        empty = true;
     }
 
     private void loadImage() {
@@ -152,6 +162,6 @@ public class ImageHUD extends HudElement {
             }
             locked = false;
         }).start();
-        setSize(imgWidth.get(), imgHeight.get());
+        updateSize();
     }
 }

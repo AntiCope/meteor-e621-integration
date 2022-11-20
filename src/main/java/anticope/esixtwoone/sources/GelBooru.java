@@ -25,13 +25,13 @@ public class GelBooru extends Source {
         JsonElement result = Http.get(query).sendJson(JsonElement.class);
         if (result == null) return null;
         if (result instanceof JsonArray array) {
-            if (array.get(random.nextInt(0, 11)) instanceof JsonObject post) {
+            if (array.get(random.nextInt(0, Math.min(11, array.size()))) instanceof JsonObject post) {
                 var url = post.get(size.toString()+"_url").getAsString();
                 return url;
             }
         } else if (result instanceof JsonObject object) {
             if (object.get("post") instanceof JsonArray array) {
-                if (array.get(random.nextInt(0, 11)) instanceof JsonObject post) {
+                if (array.get(random.nextInt(0, Math.min(11, array.size()))) instanceof JsonObject post) {
                     var url = post.get(size.toString()+"_url").getAsString();
                     return url;
                 }
@@ -40,5 +40,4 @@ public class GelBooru extends Source {
 
         return null;
     }
-
 }

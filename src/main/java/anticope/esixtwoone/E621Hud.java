@@ -45,6 +45,5 @@ public class E621Hud extends MeteorAddon {
             .getCustomValue("github:sha")
             .getAsString();
         return commit.isEmpty() ? null : commit.trim();
-
     }
 }
