@@ -16,7 +16,8 @@ public abstract class Source {
     public enum SourceType {
         e621,
         gelbooru,
-        rule34
+        rule34,
+        nekoslife
     }
 
     protected final Random random = new Random();
@@ -39,6 +40,7 @@ public abstract class Source {
             case e621 -> new ESixTwoOne();
             case gelbooru -> new GelBooru("https://gelbooru.com/", 700);
             case rule34 -> new GelBooru("https://api.rule34.xxx/", 700);
+            case nekoslife -> new NekosLife("https://nekos.life");
             default -> null;
         };
     }
