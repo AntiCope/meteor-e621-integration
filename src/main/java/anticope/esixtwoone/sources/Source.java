@@ -40,6 +40,7 @@ public abstract class Source {
             case e621 -> new ESixTwoOne();
             case gelbooru -> new GelBooru("https://gelbooru.com/", 700);
             case rule34 -> new GelBooru("https://api.rule34.xxx/", 700);
+            case nekoslife -> new NekosLife("https://nekos.life");
             default -> null;
         };
     }
