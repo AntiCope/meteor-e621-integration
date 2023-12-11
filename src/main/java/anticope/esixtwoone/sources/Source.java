@@ -16,7 +16,8 @@ public abstract class Source {
     public enum SourceType {
         e621,
         gelbooru,
-        rule34
+        rule34,
+        nekoslife
     }
 
     protected final Random random = new Random();
