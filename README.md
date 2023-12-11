@@ -1,5 +1,6 @@
-# E621 hud element
-
+# E621 hud element with nekoslife updated for 1.20.2
+Why did I update this?
+Thanks RewardedIvan for nekoslife source
 <div align="center">
   <a href="https://discord.gg/9mrRPGKYU3"><img src="https://invidget.switchblade.xyz/9mrRPGKYU3"></a>
 </div>
