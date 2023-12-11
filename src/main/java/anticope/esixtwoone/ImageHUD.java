@@ -25,7 +25,7 @@ import anticope.esixtwoone.sources.Source;
 import anticope.esixtwoone.sources.Source.Size;
 import anticope.esixtwoone.sources.Source.SourceType;
 
-import static baritone.api.utils.Helper.mc;
+import static meteordevelopment.meteorclient.MeteorClient.mc;
 import static meteordevelopment.meteorclient.utils.Utils.WHITE;
 
 public class ImageHUD extends HudElement {
