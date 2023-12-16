@@ -56,8 +56,12 @@ public class ImageHUD extends HudElement {
         .defaultValue(100)
         .min(10)
         .sliderRange(70, 1000)
-        .onChanged(o -> updateSize())
-        .build()
+        .onChanged(o -> {
+            if (o != 0) {
+                updateSize();
+            }
+        })
+        .build());
     );
 
     private final Setting<String> tags = sgGeneral.add(new StringSetting.Builder()
