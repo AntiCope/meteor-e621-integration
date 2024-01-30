@@ -61,7 +61,7 @@ public class ImageHUD extends HudElement {
                 updateSize();
             }
         })
-        .build());
+        .build()
     );
 
     private final Setting<String> tags = sgGeneral.add(new StringSetting.Builder()
