@@ -1,6 +1,8 @@
+<img src="src/main/resources/assets/e621/logo.png" alt="logo" width="200"/>
+
 # E621 hud element with nekoslife updated for 1.20.4
 Why did I update this?
-We all know how many people rely on this every day
+We all know how many people rely on this every day.
 Thanks RewardedIvan for nekoslife source
 <div align="center">
   <a href="https://discord.gg/9mrRPGKYU3"><img src="https://invidget.switchblade.xyz/9mrRPGKYU3"></a>
