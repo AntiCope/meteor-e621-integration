@@ -3,12 +3,15 @@
   "id": "e621-hud",
   "version": "${version}",
   "name": "E621 hud",
-  "description": "An addon template for the Meteor addons.",
+  "description": "E621 hud element for meteor client.",
   "authors": [
-    "AntiCope"
+    "AntiCope",
+    "veronoicc"
   ],
   "contact": {
-    "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
+    "homepage": "https://github.com/veronoicc/meteor-e621-integration",
+    "issues": "https://github.com/veronoicc/meteor-e621-integration/issues",
+    "repo": "https://github.com/veronoicc/meteor-e621-integration"
   },
   "icon": "assets/e621/icon.png",
   "environment": "client",
