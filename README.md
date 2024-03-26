@@ -1,4 +1,6 @@
-<img src="src/main/resources/assets/e621/logo.png" alt="logo" width="200"/>
+<div align="center">
+    <img src="src/main/resources/assets/e621/logo.png" alt="logo" width="200"/>
+</div>
 
 # E621 hud element with nekoslife updated for 1.20.4
 Why did I update this?
