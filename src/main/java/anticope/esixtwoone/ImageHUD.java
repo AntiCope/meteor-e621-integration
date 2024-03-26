@@ -25,7 +25,12 @@ import anticope.esixtwoone.sources.Source;
 import anticope.esixtwoone.sources.Source.Size;
 import anticope.esixtwoone.sources.Source.SourceType;
 
-import static baritone.api.utils.Helper.mc;
+import javax.imageio.ImageIO;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
+import static meteordevelopment.meteorclient.MeteorClient.mc;
 import static meteordevelopment.meteorclient.utils.Utils.WHITE;
 
 public class ImageHUD extends HudElement {
@@ -56,7 +61,11 @@ public class ImageHUD extends HudElement {
         .defaultValue(100)
         .min(10)
         .sliderRange(70, 1000)
-        .onChanged(o -> updateSize())
+        .onChanged(o -> {
+            if (o != 0) {
+                updateSize();
+            }
+        })
         .build()
     );
 
@@ -154,8 +163,10 @@ public class ImageHUD extends HudElement {
                     return;
                 }
                 E621Hud.LOG.info(url);
-                var img = NativeImage.read(Http.get(url).sendInputStream());
-                mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(img));
+                var img = ImageIO.read(Http.get(url).sendInputStream());
+                var baos = new ByteArrayOutputStream();
+                ImageIO.write(img, "png", baos);
+                mc.getTextureManager().registerTexture(TEXID, new NativeImageBackedTexture(NativeImage.read(new ByteArrayInputStream(baos.toByteArray()))));
                 empty = false;
             } catch (Exception ex) {
                 E621Hud.LOG.error("Failed to render the image.", ex);
